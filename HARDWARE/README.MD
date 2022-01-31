@@ -24,6 +24,8 @@
 
 | Pin | Description |
 | --- | ----------- |
+ 2 | Tx --> HC-05 Rx
+3 | Rx --> HC-05 Tx
 A4 | SDA --> i2C, used by Motor Sheild
 A5 | SCL --> i2C, used by Motor Sheild
 2 | Neopixel Data Pin
