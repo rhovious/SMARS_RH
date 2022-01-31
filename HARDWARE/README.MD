@@ -1,26 +1,35 @@
 # HARDWARE
 
-## MODELS
+## 3D Printing
+### Base Models
 
-[SMARS body 3D models v1](https://cults3d.com/en/3d-model/gadget/smars-modular-robot) or [SMARS body 3D models v4](https://cults3d.com/en/3d-model/gadget/smars-v4)
+* [SMARS body 3D models v1](https://cults3d.com/en/3d-model/gadget/smars-modular-robot)
+* [SMARS body 3D models v4](https://cults3d.com/en/3d-model/gadget/smars-v4)
+### Mods
+[Various additional 3D Parts](MODS/)
 
-## Hardware
+* [9V Frame](<MODS/9V frame/>)
+* [HM-10 Mount](<MODS/HM-10 Mount/>)
+* [ADAFruit Motor Shield](<MODS/L298P Shield MK2 COVER/>)
+* [Lightbar](<MODS/lightbar/>)
+---
+## Hardware Used
 
-![robot linefollower](images/robot_linefollower.jpg) ![robot ultrasonic](images/robot_ultrasonic.jpg)
-![robot linefollower](images/robot_balloon_battle.jpg) ![robot ultrasonic](images/robot_clamps.jpg)
+* Arduino Uno
+* ADAFruit Motor Shield
+* LED Strip
+* 2x N90 Motors
+---
+## PINS
 
-### Electronic
+| Pin | Description |
+| --- | ----------- |
+A4 | SDA --> i2C, used by Motor Sheild
+A5 | SCL --> i2C, used by Motor Sheild
+2 | Neopixel Data Pin
+9  |   Servo Pin, From Motor Sheild Connection
+10  |   Servo Pin, From Motor Sheild Connection
 
-I use Arduino UNO with modified FunduMoto shield. I swapped pins 5 and 10 to use the servo while driving motors using pwm.
-
-
-### PINS
-
-PIN_NEOPIXEL 2
-
-PIN_MOTOR_A_EN 5
-PIN_MOTOR_A_DIR 12
-
-
-### 3D print
-[Various additional brackets](stl_addons/)
+## i2c Addressed
+* 0x60 (the default address of the shield)
+* 0x70 (the 'all call' address that this chip uses for group-control)

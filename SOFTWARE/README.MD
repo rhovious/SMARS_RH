@@ -1,27 +1,16 @@
 # SOFTWARE
 
+## PlatformIO
 
-## PINS
+* More information can be found on their comprehensive [Docs](https://docs.platformio.org/en/latest/ide/vscode.html).
 
-```
-#define PIN_NEOPIXEL 2
+  0. Download and install official Microsoft Visual Studio Code. PlatformIO IDE is built on top of it
+  1. **Open** VSCode Package Manager
+  2. **Search** for official `platformio-ide` [extension](https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide)
+  3. **Install** PlatformIO IDE.
 
-#define PIN_MOTOR_A_EN 5
-#define PIN_MOTOR_A_DIR 12
-#define PIN_MOTOR_B_EN 11
-#define PIN_MOTOR_B_DIR 13
+## Libraries Used
 
-#define PIN_BUZZER 4
-
-#define PIN_SERVO 9
-
-#define PIN_SONAR_ECHO 7
-#define PIN_SONAR_TRIG 8
-
-#define PIN_ANALOG0 14
-#define PIN_ANALOG1 15
-#define PIN_ANALOG2 16
-#define PIN_ANALOG3 17
-#define PIN_ANALOG4 18
-#define PIN_ANALOG5 19
-```
+*  [Adafruit MotorShield V2](https://github.com/adafruit/Adafruit_Motor_Shield_V2_Library)
+*  [Dabble](https://github.com/STEMpedia/Dabble)
+*  [Adafruit_NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel)

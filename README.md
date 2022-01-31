@@ -4,6 +4,5 @@ SMARS acronym of “Screwless/Screwed Modular Assemblable Robotic System” is a
 ## Hardware
 [3D Models and Mods](HARDWARE/)
 
-
 ## Software
 [Code Examples](SOFTWARE/)
