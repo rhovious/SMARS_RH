@@ -29,7 +29,7 @@ Adafruit_DCMotor *lMotor = AFMS.getMotor(2);
 //---------------LED SETUP--------------
 
 // Define the array of leds
-Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip(LED_COUNT, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 
 unsigned long pixelPrevious = 0;   // Previous Pixel Millis
 unsigned long patternPrevious = 0; // Previous Pattern Millis
@@ -40,26 +40,31 @@ int pixelQueue = 0;                // Pattern Pixel Queue
 int pixelCycle = 0;                // Pattern Pixel Cycle
 uint16_t pixelCurrent = 0;         // Pattern Current Pixel Number
 uint16_t pixelNumber = LED_COUNT;  // Total Number of Pixels
+int lightbarState = 0;
 int headlightState = 0;
 
 //---------FUNCTIONS------------------------
 
 void setup()
 {
+    pinMode(BUILTIN_LED_PIN, OUTPUT);
+    pinMode(HEADLIGHT_PIN, OUTPUT);
+
     Serial.begin(115200); // set up Serial library at 9600 bps
-    Dabble.begin(9600); //Enter baudrate of your bluetooth.Connect bluetooth on Bluetooth port present on evive
+    Dabble.begin(9600);   //Enter baudrate of your bluetooth.Connect bluetooth on Bluetooth port present on evive
 
     //---------------MOTOR SETUP--------------------------
-    Serial.println("Adafruit Motorshield v2 - DC Motor test!");
+    printCompilationInfo();
+    Serial.println("Start SMARS Setup");
 
     if (!AFMS.begin())
     { // create with the default frequency 1.6KHz
         // if (!AFMS.begin(1000)) {  // OR with a different frequency, say 1KHz
-        Serial.println("Motor shield disconnected.");
+        Serial.println("Motor shield is disconnected.");
         while (1)
             ;
     }
-    Serial.println("Motor Shield found.");
+    Serial.println("Motor Shield found. Continuing");
 
     // Set the speed to start, from 0 (off) to 255 (max speed)
     rMotor->setSpeed(150);
@@ -78,8 +83,11 @@ void setup()
 
 void loop()
 {
+    digitalWrite(LED_BUILTIN, LOW);         //TURNS OFF LED. TURNS ON WHEN TEST LOOP RUNNING
     unsigned long currentMillis = millis(); //  Update current time
-    Dabble.processInput();                  //this function is used to refresh data obtained from smartphone.Hence calling this function is mandatory in order to get data properly from your mobile.
+
+    Dabble.processInput(); //this function is used to refresh data obtained from smartphone.Hence calling this function is mandatory in order to get data properly from your mobile.
+
     testRun(1000);
     testLedAnims(1000);
     handleButtons();

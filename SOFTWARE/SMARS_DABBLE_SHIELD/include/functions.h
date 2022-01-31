@@ -1,15 +1,76 @@
-extern int pixelInterval;
+extern Adafruit_DCMotor *rMotor;
+extern Adafruit_DCMotor *lMotor;
+
+extern void colorWipe(uint32_t color, int wait);
 extern Adafruit_NeoPixel strip;
+extern int pixelInterval;
 extern int pixelCycle;
 extern int pixelQueue;
 extern int MAX_BRIGHTNESS;
-
-extern uint16_t pixelCurrent;         // Pattern Current Pixel Number
+extern int HEADLIGHT_PIN;
+extern uint16_t pixelCurrent; // Pattern Current Pixel Number
 extern uint16_t pixelNumber;  // Total Number of Pixels
+
+extern int lightbarState;
 extern int headlightState;
-extern Adafruit_DCMotor *rMotor;
-extern Adafruit_DCMotor *lMotor;
-extern void colorWipe(uint32_t color, int wait);
+extern long currentMillis;
+
+extern String ARDUINO_BOARD;
+extern String ARDUINO_MCU;
+
+void printCompilationInfo()
+{
+    String str, adjStr;
+    Serial.print("Arduino IDE version ");
+    str = String(ARDUINO);
+    adjStr = str.substring(1, str.length() - 5) + ".";
+    adjStr = adjStr + str.substring(str.length() - 4, str.length() - 2) + ".";
+    adjStr = adjStr + str.substring(str.length() - 2);
+    Serial.println(adjStr); // date and time sketch compiled
+    Serial.print("Compiler version    ");
+    Serial.println(__VERSION__);
+    Serial.print("Compiled date       ");
+    Serial.println(__DATE__);
+    Serial.print("Compiled time       ");
+    Serial.println(__TIME__);
+    Serial.print("Sketch location     ");
+    Serial.println(__FILE__);
+    Serial.print("CPU frequency(MHz)  "); // CPU frequency
+    Serial.println(F_CPU / 1000000);
+    Serial.print("Development board   ");
+    Serial.println(ARDUINO_BOARD);
+#ifdef __AVR__ // development board
+    Serial.print("Microcontroller     ");
+    Serial.println(ARDUINO_MCU);
+#endif // microcontroller
+    Serial.print("SPI MOSI ");
+    Serial.println(MOSI); // pin layout SPI
+    Serial.print("SPI MISO ");
+    Serial.println(MISO);
+    Serial.print("SPI SCK  ");
+    Serial.println(SCK);
+    Serial.print("SPI SS   ");
+    Serial.println(SS);
+    Serial.print("I2C SDA  ");
+    Serial.println(SDA); // pin layout I2C
+    Serial.print("I2C SCL  ");
+    Serial.println(SCL);
+#ifndef ESP32
+    Serial.print("LED      ");
+    Serial.println(LED_BUILTIN); // built-in LED
+#endif                           // Arduino IDE version
+
+/*
+    Serial.print(F("Compiled: "));
+    Serial.print(F(__DATE__));
+    Serial.print(F(", "));
+    Serial.print(F(__TIME__));
+    Serial.print(F(", "));
+    Serial.println(F(__VERSION__));
+    Serial.print(F("Arduino IDE version: "));
+    Serial.println(ARDUINO, DEC);
+    */
+}
 
 void goStop()
 {
@@ -51,6 +112,7 @@ void goForward()
         lMotor->setSpeed(i);
         delay(10);
     }
+
     for (i = 255; i != 0; i--)
     {
         rMotor->setSpeed(i);
@@ -72,11 +134,28 @@ void goBackward()
         lMotor->setSpeed(i);
         delay(10);
     }
+
     for (i = 255; i != 0; i--)
     {
         rMotor->setSpeed(i);
         lMotor->setSpeed(i);
         delay(10);
+    }
+}
+
+void lightbarToggle(int toggle)
+{
+    // Turn the LED on, then pause
+    if (toggle == 1)
+    {
+        lightbarState = 1;
+        colorWipe(strip.Color(MAX_BRIGHTNESS, MAX_BRIGHTNESS, MAX_BRIGHTNESS), 50); // White
+    }
+
+    if (toggle == 0)
+    {
+        lightbarState = 0;
+        colorWipe(strip.Color(0, 0, 0), 50); // OFF
     }
 }
 
@@ -86,13 +165,14 @@ void headlightToggle(int toggle)
     if (toggle == 1)
     {
         headlightState = 1;
-        colorWipe(strip.Color(MAX_BRIGHTNESS, MAX_BRIGHTNESS, MAX_BRIGHTNESS), 50); // White
+        analogWrite(HEADLIGHT_PIN, 255); //ON
+        
     }
 
     if (toggle == 0)
     {
         headlightState = 0;
-        colorWipe(strip.Color(0, 0, 0), 50); // OFF
+        analogWrite(HEADLIGHT_PIN, 0); //OFF
     }
 }
 
@@ -114,31 +194,43 @@ void handleButtons()
     if (GamePad.isLeftPressed())
     {
         Serial.print("Left");
+        turnRight(1);
     }
 
     if (GamePad.isRightPressed())
     {
         Serial.print("Right");
+        turnRight(1);
     }
 
     if (GamePad.isSquarePressed())
     {
         Serial.print("Square");
-        if (headlightState == 1)
+        if (lightbarState == 1)
         {
-            headlightToggle(0);
-            Serial.print("Turning OFF headlights");
+            lightbarToggle(0);
+            Serial.print("Turning OFF Lightbar");
         }
-        else if (headlightState == 0)
+        else if (lightbarState == 0)
         {
-            headlightToggle(1);
-            Serial.print("Turning ON headlights");
+            lightbarToggle(1);
+            Serial.print("Turning ON Lightbar");
         }
     }
 
     if (GamePad.isCirclePressed())
     {
         Serial.print("Circle");
+        if (headlightState == 1)
+        {
+            headlightToggle(0);
+            Serial.print("Turning OFF Headlights");
+        }
+        else if (headlightState == 0)
+        {
+            headlightToggle(1);
+            Serial.print("Turning ON Headlights");
+        }
     }
 
     if (GamePad.isCrossPressed())
@@ -161,6 +253,7 @@ void handleButtons()
         Serial.print("Select");
     }
     Serial.print('\t');
+    //  Update current time
 }
 
 void handleSticks()
@@ -183,15 +276,14 @@ void handleSticks()
     Serial.println();
 }
 
-
-
 void testRun(int testRunDelay)
 {
+    digitalWrite(LED_BUILTIN, HIGH); //TURNS ON LED AT BEGINNING
     goForward();
     delay(testRunDelay);
     goBackward();
     delay(testRunDelay);
     goStop();
     delay(testRunDelay);
+    digitalWrite(LED_BUILTIN, LOW); //TURNS OFF LED AT END
 }
-
