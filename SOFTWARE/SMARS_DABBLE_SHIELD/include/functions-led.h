@@ -6,7 +6,27 @@
 // strip.Color(red, green, blue) as shown in the loop() function above),
 // and a delay time (in milliseconds) between pixels.
 
-//extern int MAX_BRIGHTNESS;
+/*
+extern uint16_t pixelCurrent; // Pattern Current Pixel Number
+extern uint16_t pixelNumber;  // Total Number of Pixels
+extern Adafruit_NeoPixel strip;
+extern int pixelInterval;
+extern int pixelCycle;
+extern int pixelQueue;
+extern int MAX_BRIGHTNESS;
+extern int HEADLIGHT_PIN;
+*/
+unsigned long pixelPrevious = 0;   // Previous Pixel Millis
+unsigned long patternPrevious = 0; // Previous Pattern Millis
+int patternCurrent = 0;            // Current Pattern Number
+int pixelQueue = 0;                // Pattern Pixel Queue
+int pixelCycle = 0;                // Pattern Pixel Cycle
+uint16_t pixelCurrent = 0;         // Pattern Current Pixel Number
+int patternInterval = 5000;        // Pattern Interval (ms)
+int pixelInterval = 50;            // Pixel Interval (ms)
+extern int MAX_BRIGHTNESS;
+extern int HEADLIGHT_PIN;
+extern int MAX_BRIGHTNESS;
 
 // Input a value 0 to 255 to get a color value.
 // The colours are a transition r - g - b - back to r.
@@ -26,7 +46,6 @@ uint32_t Wheel(byte WheelPos)
     return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
 }
 
-
 void colorWipe(uint32_t color, int wait)
 {
     if (pixelInterval != wait)
@@ -38,6 +57,47 @@ void colorWipe(uint32_t color, int wait)
         pixelCurrent = 0;
 }
 
+void rightLights(uint32_t color, int wait)
+{
+
+    for (uint16_t i = pixelNumber / 2; i < pixelNumber; i++)
+    {
+
+        strip.setPixelColor(i, color);
+    }
+    strip.show(); //  Update strip to match
+}
+
+void leftLights(uint32_t color, int wait)
+{
+    for (uint16_t i = 0; i < pixelNumber / 2; i++)
+    {
+
+        strip.setPixelColor(i, color);
+    }
+    strip.show(); //  Update strip to match
+}
+
+void allLights(uint32_t color, int wait)
+{
+    for (uint16_t i = 0; i < pixelNumber; i++)
+    {
+
+        strip.setPixelColor(i, color);
+    }
+    strip.show(); //  Update strip to match
+}
+
+void backupLights(uint32_t color, int wait)
+{
+    for (uint16_t i = 0; i < pixelNumber / 2; i++)
+    {
+
+        strip.setPixelColor(i, color);
+    }
+    strip.show(); //  Update strip to match
+}
+
 // Theater-marquee-style chasing lights. Pass in a color (32-bit value,
 // a la strip.Color(r,g,b) as mentioned above), and a delay time (in ms)
 // between frames.
@@ -47,6 +107,7 @@ void theaterChase(uint32_t color, int wait)
         pixelInterval = wait; //  Update delay time
     for (uint16_t i = 0; i < pixelNumber; i++)
     {
+        Serial.println(i);
         strip.setPixelColor(i + pixelQueue, color); //  Set pixel's color (in RAM)
     }
     strip.show(); //  Update strip to match
@@ -74,7 +135,7 @@ void rainbow(uint8_t wait)
         pixelCycle = 0; //  Loop the cycle back to the begining
 }
 
-//Theatre-style crawling lights with rainbow effect
+// Theatre-style crawling lights with rainbow effect
 void theaterChaseRainbow(uint8_t wait)
 {
     if (pixelInterval != wait)
@@ -96,26 +157,38 @@ void theaterChaseRainbow(uint8_t wait)
         pixelCycle = 0; //  Loop
 }
 
-
-void testLedAnims(int delayTime)
+void testLedAnims()
 {
-    theaterChaseRainbow(50);                      // Rainbow-enhanced theaterChase variant
-    delay(delayTime);
+    // Serial.println("Starting LED Test");
+    currentMillis = millis(); //  Update current time
+    if ((currentMillis - patternPrevious) >= patternInterval)
+    { //  Check for expired time
+        patternPrevious = currentMillis;
+        patternCurrent++; //  Advance to next pattern
+        if (patternCurrent >= 4)
+            patternCurrent = 0;
+    }
 
-    rainbow(10);                                  // Flowing rainbow cycle along the whole strip
-    delay(delayTime);
+    if (currentMillis - pixelPrevious >= pixelInterval)
+    {                                  //  Check for expired time
+        pixelPrevious = currentMillis; //  Run current frame
+        switch (patternCurrent)
+        {
 
-    theaterChase(strip.Color(0, 0, 127), 50);     // Blue
-    delay(delayTime);
-    theaterChase(strip.Color(127, 0, 0), 50);     // Red
-    delay(delayTime);
-    theaterChase(strip.Color(127, 127, 127), 50); // White
-    delay(delayTime);
-
-    colorWipe(strip.Color(0, 0, 255), 50);        // Blue
-    delay(delayTime);
-    colorWipe(strip.Color(0, 255, 0), 50);        // Green
-    delay(delayTime);
-    colorWipe(strip.Color(255, 0, 0), 50);        // Red
-    delay(delayTime);
+        case 3:
+            // theaterChase(strip.Color(127, 127, 127), 50); // White
+            colorWipe(strip.Color(0, 0, 255), 50); // Red
+            break;
+        case 2:
+            colorWipe(strip.Color(0, 0, 255), 50); // Blue
+            break;
+        case 1:
+            colorWipe(strip.Color(255, 0, 0), 50); // Green
+            break;
+        default:
+            colorWipe(strip.Color(127, 127, 127), 50); // White
+            break;
+        }
+    }
+    // Serial.println("Finish LED Test");
 }

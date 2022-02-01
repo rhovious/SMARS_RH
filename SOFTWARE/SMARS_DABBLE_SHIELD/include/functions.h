@@ -2,6 +2,10 @@ extern Adafruit_DCMotor *rMotor;
 extern Adafruit_DCMotor *lMotor;
 
 extern void colorWipe(uint32_t color, int wait);
+extern void leftLights(uint32_t color, int wait);
+extern void rightLights(uint32_t color, int wait);
+extern void allLights(uint32_t color, int wait);
+extern void backupLights(uint32_t color, int wait);
 extern Adafruit_NeoPixel strip;
 extern int pixelInterval;
 extern int pixelCycle;
@@ -13,7 +17,7 @@ extern uint16_t pixelNumber;  // Total Number of Pixels
 
 extern int lightbarState;
 extern int headlightState;
-extern long currentMillis;
+extern unsigned long currentMillis;
 
 extern String ARDUINO_BOARD;
 extern String ARDUINO_MCU;
@@ -60,21 +64,21 @@ void printCompilationInfo()
     Serial.println(LED_BUILTIN); // built-in LED
 #endif                           // Arduino IDE version
 
-/*
-    Serial.print(F("Compiled: "));
-    Serial.print(F(__DATE__));
-    Serial.print(F(", "));
-    Serial.print(F(__TIME__));
-    Serial.print(F(", "));
-    Serial.println(F(__VERSION__));
-    Serial.print(F("Arduino IDE version: "));
-    Serial.println(ARDUINO, DEC);
-    */
+    /*
+        Serial.print(F("Compiled: "));
+        Serial.print(F(__DATE__));
+        Serial.print(F(", "));
+        Serial.print(F(__TIME__));
+        Serial.print(F(", "));
+        Serial.println(F(__VERSION__));
+        Serial.print(F("Arduino IDE version: "));
+        Serial.println(ARDUINO, DEC);
+        */
 }
 
 void goStop()
 {
-    Serial.print("STOPPING");
+    Serial.println("STOPPING");
     rMotor->run(RELEASE);
     lMotor->run(RELEASE);
 }
@@ -103,9 +107,10 @@ void turnLeft()
 void goForward()
 {
     uint8_t i;
-    Serial.print("FORWARD");
+    Serial.println("FORWARD");
     rMotor->run(FORWARD);
     lMotor->run(FORWARD);
+    allLights(strip.Color(0, MAX_BRIGHTNESS, 0), 50); // w
     for (i = 0; i < 255; i++)
     {
         rMotor->setSpeed(i);
@@ -119,12 +124,62 @@ void goForward()
         lMotor->setSpeed(i);
         delay(10);
     }
+    allLights(strip.Color(0, 0, 0), 50); // w
+}
+
+void leftTest()
+{
+    uint8_t i;
+    Serial.println("LEFT ONLY");
+    // rMotor->run(FORWARD);
+    lMotor->run(FORWARD);
+
+    leftLights(strip.Color(0, MAX_BRIGHTNESS, 0), 50); // green
+    for (i = 0; i < 255; i++)
+    {
+        // rMotor->setSpeed(i);
+        lMotor->setSpeed(i);
+        delay(10);
+    }
+
+    for (i = 255; i != 0; i--)
+    {
+        // rMotor->setSpeed(i);
+        lMotor->setSpeed(i);
+        delay(10);
+    }
+    leftLights(strip.Color(0, 0, 0), 50); // whit
+}
+
+void rightTest()
+{
+    uint8_t i;
+    Serial.println("RIGHT ONLY");
+    rMotor->run(FORWARD);
+
+    rightLights(strip.Color(0, MAX_BRIGHTNESS, 0), 50); // green
+    // lMotor->run(FORWARD);
+    for (i = 0; i < 255; i++)
+    {
+        rMotor->setSpeed(i);
+        // lMotor->setSpeed(i);
+        delay(10);
+    }
+
+    for (i = 255; i != 0; i--)
+    {
+        rMotor->setSpeed(i);
+        // lMotor->setSpeed(i);
+        delay(10);
+    }
+    rightLights(strip.Color(0, 0, 0), 50); // off
 }
 
 void goBackward()
 {
     uint8_t i;
-    Serial.print("BACKWARD");
+    Serial.println("BACKWARD");
+    allLights(strip.Color(MAX_BRIGHTNESS, 0, 0), 50); // red
 
     rMotor->run(BACKWARD);
     lMotor->run(BACKWARD);
@@ -141,6 +196,7 @@ void goBackward()
         lMotor->setSpeed(i);
         delay(10);
     }
+    allLights(strip.Color(0, 0, 0), 50); // off
 }
 
 void lightbarToggle(int toggle)
@@ -165,14 +221,13 @@ void headlightToggle(int toggle)
     if (toggle == 1)
     {
         headlightState = 1;
-        analogWrite(HEADLIGHT_PIN, 255); //ON
-        
+        analogWrite(HEADLIGHT_PIN, 255); // ON
     }
 
     if (toggle == 0)
     {
         headlightState = 0;
-        analogWrite(HEADLIGHT_PIN, 0); //OFF
+        analogWrite(HEADLIGHT_PIN, 0); // OFF
     }
 }
 
@@ -276,14 +331,21 @@ void handleSticks()
     Serial.println();
 }
 
-void testRun(int testRunDelay)
+void testDrive(int testDriveDelay)
 {
-    digitalWrite(LED_BUILTIN, HIGH); //TURNS ON LED AT BEGINNING
-    goForward();
-    delay(testRunDelay);
-    goBackward();
-    delay(testRunDelay);
+    digitalWrite(LED_BUILTIN, HIGH); // TURNS ON LED AT BEGINNING
+    // turnRight(10);
+    leftTest();
     goStop();
-    delay(testRunDelay);
-    digitalWrite(LED_BUILTIN, LOW); //TURNS OFF LED AT END
+    delay(testDriveDelay);
+    rightTest();
+    goStop();
+    delay(testDriveDelay);
+    goForward();
+    goStop();
+    delay(testDriveDelay);
+    goBackward();
+    goStop();
+    delay(testDriveDelay);
+    digitalWrite(LED_BUILTIN, LOW); // TURNS OFF LED AT END
 }
