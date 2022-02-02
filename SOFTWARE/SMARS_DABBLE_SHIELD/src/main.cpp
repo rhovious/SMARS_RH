@@ -5,6 +5,7 @@
  *  HC-05 bluetooth module ----> arduino "UNO"
  *              Tx         ----> 2
  *              Rx         ----> 3
+ * 
  *
  * https://www.impulseadventure.com/elec/robot-differential-steering.html
  *

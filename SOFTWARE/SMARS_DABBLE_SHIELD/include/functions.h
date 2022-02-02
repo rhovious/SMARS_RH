@@ -76,129 +76,6 @@ void printCompilationInfo()
         */
 }
 
-void goStop()
-{
-    Serial.println("STOPPING");
-    rMotor->run(RELEASE);
-    lMotor->run(RELEASE);
-}
-
-void turnRight(int amount)
-{ // amount is the parameter
-    Serial.println("turnRight");
-    lMotor->setSpeed(250);
-    lMotor->run(FORWARD);
-    rMotor->setSpeed(50);
-    rMotor->run(BACKWARD);
-    delay(amount); // here we are using the parameter
-    goStop();
-    delay(250);
-}
-
-void turnLeft()
-{
-    Serial.println("turnLeft");
-    lMotor->setSpeed(250);
-    lMotor->run(BACKWARD);
-    rMotor->setSpeed(50);
-    rMotor->run(FORWARD);
-}
-
-void goForward()
-{
-    uint8_t i;
-    Serial.println("FORWARD");
-    rMotor->run(FORWARD);
-    lMotor->run(FORWARD);
-    allLights(strip.Color(0, MAX_BRIGHTNESS, 0), 50); // w
-    for (i = 0; i < 255; i++)
-    {
-        rMotor->setSpeed(i);
-        lMotor->setSpeed(i);
-        delay(10);
-    }
-
-    for (i = 255; i != 0; i--)
-    {
-        rMotor->setSpeed(i);
-        lMotor->setSpeed(i);
-        delay(10);
-    }
-    allLights(strip.Color(0, 0, 0), 50); // w
-}
-
-void leftTest()
-{
-    uint8_t i;
-    Serial.println("LEFT ONLY");
-    // rMotor->run(FORWARD);
-    lMotor->run(FORWARD);
-
-    leftLights(strip.Color(0, MAX_BRIGHTNESS, 0), 50); // green
-    for (i = 0; i < 255; i++)
-    {
-        // rMotor->setSpeed(i);
-        lMotor->setSpeed(i);
-        delay(10);
-    }
-
-    for (i = 255; i != 0; i--)
-    {
-        // rMotor->setSpeed(i);
-        lMotor->setSpeed(i);
-        delay(10);
-    }
-    leftLights(strip.Color(0, 0, 0), 50); // whit
-}
-
-void rightTest()
-{
-    uint8_t i;
-    Serial.println("RIGHT ONLY");
-    rMotor->run(FORWARD);
-
-    rightLights(strip.Color(0, MAX_BRIGHTNESS, 0), 50); // green
-    // lMotor->run(FORWARD);
-    for (i = 0; i < 255; i++)
-    {
-        rMotor->setSpeed(i);
-        // lMotor->setSpeed(i);
-        delay(10);
-    }
-
-    for (i = 255; i != 0; i--)
-    {
-        rMotor->setSpeed(i);
-        // lMotor->setSpeed(i);
-        delay(10);
-    }
-    rightLights(strip.Color(0, 0, 0), 50); // off
-}
-
-void goBackward()
-{
-    uint8_t i;
-    Serial.println("BACKWARD");
-    allLights(strip.Color(MAX_BRIGHTNESS, 0, 0), 50); // red
-
-    rMotor->run(BACKWARD);
-    lMotor->run(BACKWARD);
-    for (i = 0; i < 255; i++)
-    {
-        rMotor->setSpeed(i);
-        lMotor->setSpeed(i);
-        delay(10);
-    }
-
-    for (i = 255; i != 0; i--)
-    {
-        rMotor->setSpeed(i);
-        lMotor->setSpeed(i);
-        delay(10);
-    }
-    allLights(strip.Color(0, 0, 0), 50); // off
-}
-
 void lightbarToggle(int toggle)
 {
     // Turn the LED on, then pause
@@ -231,6 +108,154 @@ void headlightToggle(int toggle)
     }
 }
 
+//~~~~~~~~~~~~~~DRIVE FUNCTIONS~~~~~~~~~~~~~~~~~~~~~
+
+void goStop()
+{
+    Serial.println("STOPPING");
+    rMotor->run(RELEASE);
+    lMotor->run(RELEASE);
+}
+
+void goTurnRight()
+{ // amount is the parameter
+    Serial.println("TEST - turnRight");
+    lMotor->setSpeed(250);
+    lMotor->run(FORWARD);
+    rMotor->setSpeed(50);
+    rMotor->run(BACKWARD);
+    //delay(amount); // here we are using the parameter
+    goStop();
+    delay(250);
+}
+
+void goTurnLeft()
+{
+    Serial.println("TEST - Turn Left");
+    lMotor->setSpeed(250);
+    lMotor->run(BACKWARD);
+    rMotor->setSpeed(50);
+    rMotor->run(FORWARD);
+}
+
+void goForward()
+{
+    Serial.println("FORWARD");
+    lMotor->setSpeed(250);
+    lMotor->run(FORWARD);
+    rMotor->setSpeed(250);
+    rMotor->run(FORWARD);
+}
+
+void goBackward()
+{
+    Serial.println("BACKWARD");
+    lMotor->setSpeed(250);
+    lMotor->run(BACKWARD);
+    rMotor->setSpeed(250);
+    rMotor->run(BACKWARD);
+}
+
+//~~~~~~~~~~~~~~TESTING FUNCTIONS~~~~~~~~~~~~~~~~~~~~~
+
+void forwardTest()
+{
+    uint8_t i;
+    Serial.println("FORWARD");
+    rMotor->run(FORWARD);
+    lMotor->run(FORWARD);
+    allLights(strip.Color(0, MAX_BRIGHTNESS, 0), 50); // w
+    for (i = 0; i < 255; i++)
+    {
+        rMotor->setSpeed(i);
+        lMotor->setSpeed(i);
+        delay(10);
+    }
+
+    for (i = 255; i != 0; i--)
+    {
+        rMotor->setSpeed(i);
+        lMotor->setSpeed(i);
+        delay(10);
+    }
+    allLights(strip.Color(0, 0, 0), 50); // w
+}
+
+void leftWheelTest()
+{
+    uint8_t i;
+    Serial.println("LEFT ONLY");
+    // rMotor->run(FORWARD);
+    lMotor->run(FORWARD);
+
+    leftLights(strip.Color(0, MAX_BRIGHTNESS, 0), 50); // green
+    for (i = 0; i < 255; i++)
+    {
+        // rMotor->setSpeed(i);
+        lMotor->setSpeed(i);
+        delay(10);
+    }
+
+    for (i = 255; i != 0; i--)
+    {
+        // rMotor->setSpeed(i);
+        lMotor->setSpeed(i);
+        delay(10);
+    }
+    leftLights(strip.Color(0, 0, 0), 50); // whit
+}
+
+void rightWheelTest()
+{
+    uint8_t i;
+    Serial.println("RIGHT ONLY");
+    rMotor->run(FORWARD);
+
+    rightLights(strip.Color(0, MAX_BRIGHTNESS, 0), 50); // green
+    // lMotor->run(FORWARD);
+    for (i = 0; i < 255; i++)
+    {
+        rMotor->setSpeed(i);
+        // lMotor->setSpeed(i);
+        delay(10);
+    }
+
+    for (i = 255; i != 0; i--)
+    {
+        rMotor->setSpeed(i);
+        // lMotor->setSpeed(i);
+        delay(10);
+    }
+    rightLights(strip.Color(0, 0, 0), 50); // off
+}
+
+void backwardTest()
+{
+    uint8_t i;
+    Serial.println("BACKWARD");
+    allLights(strip.Color(MAX_BRIGHTNESS, 0, 0), 50); // red
+
+    rMotor->run(BACKWARD);
+    lMotor->run(BACKWARD);
+    for (i = 0; i < 255; i++)
+    {
+        rMotor->setSpeed(i);
+        lMotor->setSpeed(i);
+        delay(10);
+    }
+
+    for (i = 255; i != 0; i--)
+    {
+        rMotor->setSpeed(i);
+        lMotor->setSpeed(i);
+        delay(10);
+    }
+    allLights(strip.Color(0, 0, 0), 50); // off
+}
+
+
+//~~~~~~~~~~~~~~CONTROL FUNCTIONS~~~~~~~~~~~~~~~~~~~~~
+
 void handleButtons()
 {
     Serial.print("KeyPressed: ");
@@ -249,14 +274,19 @@ void handleButtons()
     if (GamePad.isLeftPressed())
     {
         Serial.print("Left");
-        turnRight(1);
+        goTurnLeft();
     }
 
     if (GamePad.isRightPressed())
     {
         Serial.print("Right");
-        turnRight(1);
+        goTurnRight();
     }
+    if (!GamePad.isUpPressed() && !GamePad.isDownPressed() && !GamePad.isLeftPressed() && !GamePad.isRightPressed())
+    {
+        goStop();
+    }
+
 
     if (GamePad.isSquarePressed())
     {
@@ -335,16 +365,16 @@ void testDrive(int testDriveDelay)
 {
     digitalWrite(LED_BUILTIN, HIGH); // TURNS ON LED AT BEGINNING
     // turnRight(10);
-    leftTest();
+    leftWheelTest();
     goStop();
     delay(testDriveDelay);
-    rightTest();
+    rightWheelTest();
     goStop();
     delay(testDriveDelay);
-    goForward();
+    forwardTest();
     goStop();
     delay(testDriveDelay);
-    goBackward();
+    backwardTest();
     goStop();
     delay(testDriveDelay);
     digitalWrite(LED_BUILTIN, LOW); // TURNS OFF LED AT END
