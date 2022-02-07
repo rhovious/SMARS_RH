@@ -5,5 +5,5 @@ String ARDUINO_BOARD = "uno";
 int LED_COUNT = 8;
 int NEOPIXEL_PIN = 6;
 int BUILTIN_LED_PIN = 13;
-int MAX_BRIGHTNESS = 128;
+int MAX_BRIGHTNESS = 128; //real max around 255
 int HEADLIGHT_PIN = 6;

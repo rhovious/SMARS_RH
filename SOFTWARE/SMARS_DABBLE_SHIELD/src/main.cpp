@@ -34,7 +34,7 @@ Adafruit_DCMotor *rMotor = AFMS.getMotor(2);
 // Define the array of leds
 Adafruit_NeoPixel strip(LED_COUNT, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 
-uint16_t pixelNumber = LED_COUNT; // Total Number of Pixels
+
 int lightbarState = 0;
 int headlightState = 0;
 unsigned long currentMillis = millis();
@@ -84,8 +84,8 @@ void loop()
 
     Dabble.processInput(); // this function is used to refresh data obtained from smartphone.Hence calling this function is mandatory in order to get data properly from your mobile.
 
-    testDrive(1000);
+    //testDrive(1000);
     // testLedAnims();
-    // handleButtons();
+    handleButtons();
     // handleSticks();
 }

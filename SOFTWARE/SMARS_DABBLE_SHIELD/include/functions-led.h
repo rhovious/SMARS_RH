@@ -22,11 +22,13 @@ int patternCurrent = 0;            // Current Pattern Number
 int pixelQueue = 0;                // Pattern Pixel Queue
 int pixelCycle = 0;                // Pattern Pixel Cycle
 uint16_t pixelCurrent = 0;         // Pattern Current Pixel Number
-int patternInterval = 5000;        // Pattern Interval (ms)
-int pixelInterval = 50;            // Pixel Interval (ms)
+int patternInterval = 5000;   // Pattern Interval (ms)
+int pixelInterval = 50;       // Pixel Interval (ms)
 extern int MAX_BRIGHTNESS;
 extern int HEADLIGHT_PIN;
 extern int MAX_BRIGHTNESS;
+extern int LED_COUNT;
+uint16_t pixelNumber = LED_COUNT; // Total Number of Pixels
 
 // Input a value 0 to 255 to get a color value.
 // The colours are a transition r - g - b - back to r.

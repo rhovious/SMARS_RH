@@ -119,22 +119,22 @@ void goStop()
 
 void goTurnRight()
 { // amount is the parameter
-    Serial.println("TEST - turnRight");
+    Serial.println("turnRight");
     lMotor->setSpeed(250);
     lMotor->run(FORWARD);
     rMotor->setSpeed(50);
     rMotor->run(BACKWARD);
     //delay(amount); // here we are using the parameter
-    goStop();
-    delay(250);
+    //goStop();
+    //delay(250);
 }
 
 void goTurnLeft()
 {
-    Serial.println("TEST - Turn Left");
-    lMotor->setSpeed(250);
+    Serial.println("TurnLeft");
+    lMotor->setSpeed(50);
     lMotor->run(BACKWARD);
-    rMotor->setSpeed(50);
+    rMotor->setSpeed(250);
     rMotor->run(FORWARD);
 }
 
