@@ -74,7 +74,9 @@ void setup()
 
     strip.begin();                       // INITIALIZE NeoPixel strip object (REQUIRED)
     strip.show();                        // Turn OFF all pixels ASAP
-    strip.setBrightness(MAX_BRIGHTNESS); // Set BRIGHTNESS to about 1/5 (max = 255)
+    //strip.setBrightness(MAX_BRIGHTNESS); // Set BRIGHTNESS to about 1/5 (max = 255)
+    allLights(strip.Color(random(0, MAX_BRIGHTNESS), random(0, MAX_BRIGHTNESS), random(0, MAX_BRIGHTNESS)));// White
+    //lightbarToggle(1);
 }
 
 void loop()
@@ -86,6 +88,7 @@ void loop()
 
     //testDrive(1000);
     // testLedAnims();
+    
     handleButtons();
     // handleSticks();
 }
